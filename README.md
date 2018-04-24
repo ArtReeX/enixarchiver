@@ -1,3 +1,3 @@
 # EnixArchiver
 
-Архиватор для файлов игры NieR.
+Архиватор для файлов игры NieR: Automata.
