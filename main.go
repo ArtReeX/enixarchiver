@@ -2,34 +2,36 @@ package main
 
 import (
 	"fmt"
+
+	"./console"
+	"./unpacking"
 )
 
-func getAnswer(variants []uint64) uint64 {
+const (
+	// PACKEDFOLDER - папка с запакованными файлами
+	PACKEDFOLDER = "packed"
+	// UNPACKEDFOLDER - папка с распакованными файлами
+	UNPACKEDFOLDER = "unpacked"
+)
 
-	for {
+// StartMode - функция запуска выбранного пользователем режима
+func StartMode(mode uint64) {
 
-		// считывание строки
-		var answer uint64
-		fmt.Scanf("%d \n", &answer)
+	switch mode {
 
-		// проверка допустимости ответа
-		for _, variant := range variants {
-			if variant == answer {
-				return answer
-			}
-		}
-
-		fmt.Println("Неправильный вариант ответа, попробуйте снова.")
-
+	case 1:
+		unpacking.StartUnpackingMode(PACKEDFOLDER, UNPACKEDFOLDER)
 	}
 
 }
 
 func main() {
 
-	fmt.Println("Вы запустили архиватор для NieR: Automata.")
-	fmt.Println("Выберите режим работы: 1 - распаковка | 2 - запаковка")
+	fmt.Println(`
+		Вы запустили архиватор для NieR: Automata.
+		Выберите режим работы: 1 - распаковка | 2 - запаковка.
+	`)
 
-	getAnswer([]uint64{1, 2})
+	StartMode(console.GetNumber([]uint64{1, 2}))
 
 }
