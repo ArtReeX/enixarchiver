@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"unsafe"
 
 	"../console"
 	"../utilities"
@@ -47,7 +46,7 @@ func Unpack(path string) {
 
 	// создание потока для чтения файла
 	buffer := bytes.Buffer{}
-	buffer.Write(file)
+	binary.Write(&buffer, binary.BigEndian, file)
 
 	// чтение заголовков файла
 	ReadHeader(&buffer)
@@ -60,17 +59,20 @@ func ReadHeader(buffer *bytes.Buffer) *Header {
 	// выделение места в памяти под заголовки
 	head := Header{}
 
-	fmt.Println("В памяти под заголовки выделено байт:", unsafe.Sizeof(head))
+	fmt.Println("В памяти под заголовки выделено байт:", binary.Size(&head))
+	fmt.Println("Структура заголовка до декодирования:", head)
 
-	// получение части, содержащую заголовок из буфера с автоматической прокруткой буфера
-	partWithHead := buffer.Next(binary.Size(&head))
+	// считывание заголовков
+	WriteToStructUint32(buffer, &head.magic)
+	WriteToStructUint32(buffer, &head.fileCount)
+	WriteToStructUint32(buffer, &head.fileTableOffset)
+	WriteToStructUint32(buffer, &head.extensionOffset)
+	WriteToStructUint32(buffer, &head.nameTableOffset)
+	WriteToStructUint32(buffer, &head.sizeTableOffset)
+	WriteToStructUint32(buffer, &head.unknownOffset)
+	WriteToStructUint32(buffer, &head.null)
 
-	fmt.Println("Заголовок для декодирования:", partWithHead)
-
-	// преобразование данных заголовка в структуру
-	if error := binary.Read(bytes.NewReader(partWithHead), binary.LittleEndian, &head); error != nil {
-		fmt.Println("Ошибка преобразование данных заголовка в структуру.")
-	}
+	fmt.Println("Структура заголовка после декодирования:", head)
 
 	return &head
 

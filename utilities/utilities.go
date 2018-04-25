@@ -50,15 +50,14 @@ func ReadFile(path string) []byte {
 	file, error := os.Open(path)
 	defer file.Close()
 	if error != nil {
-		fmt.Println("Ошибка открытия файла", path)
+		fmt.Println("Ошибка открытия файла.")
 	}
 
 	// чтение файла
 	data, error := ioutil.ReadAll(file)
 	if error != nil {
-		log.Fatal("Ошибка чтения файла", path)
+		log.Fatal("Ошибка чтения файла.")
 	}
 
-	// преобразование в HEX
 	return data
 }
